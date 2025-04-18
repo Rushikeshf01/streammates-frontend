@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const creatreRoomSchema = z.object({
+export const CreateRoomSchema = z.object({
     roomName: z.string().min(2, "Room name is required"),
    
 });

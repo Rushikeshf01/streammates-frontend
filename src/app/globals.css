@@ -121,8 +121,7 @@
 
   --primary: #8B5CF6;
   --primary-foreground: 210 40% 98%;
-  --stremaccent: #8B5CF6
-
+  --stremaccent: #8B5CF6;
 }
 
 @layer base{

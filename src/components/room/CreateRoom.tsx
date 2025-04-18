@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { creatreRoomSchema } from "@/utils/roomValidationSchema";
+import { CreateRoomSchema } from "@/utils/roomValidationSchema";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -14,7 +14,7 @@ import {
 import { Label } from "@/components/ui/label"
 
 export default function CreateRoom() {
-    type CreateRoomValues = z.infer<typeof creatreRoomSchema>
+    type CreateRoomValues = z.infer<typeof CreateRoomSchema>
 
     const {
         register,
