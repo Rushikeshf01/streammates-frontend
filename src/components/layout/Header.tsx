@@ -2,16 +2,32 @@
 // import { useState } from "react";
 import Link from 'next/link'
 import { Button } from "@/components/ui/button";
-import { LogIn, Monitor, UserPlus } from "lucide-react";
+import { LogIn, Monitor, Plus, UserPlus } from "lucide-react";
+import { useState } from 'react';
+import { useAppSelector } from '@/store/hooks/hooks';
+import UserMenu from './UserMenu';
 
 interface HeaderProps {
-  user: { name: string } | null;
+  // user: { name: string } | null;
   onSignIn: () => void;
   onSignOut: () => void;
 }
 
-const Header = ({ user, onSignIn, onSignOut }: HeaderProps) => {
+const Header = ({onSignIn }: HeaderProps) => {
+  const userstate  = useAppSelector(state => state.user.user)
+  console.log(userstate)
+  const [user, setUser] = useState<{ username: string, email: string } | null>(userstate);
 
+  const handleGuestEntry = () => {
+    setUser({ username: "Guest User", email: "username@guest.com" });
+    // toast.success("Welcome, Guest User!", {
+    //   description: "You can now create or join a room."
+    // });
+  };
+  const onSignOut = () => {
+    console.log('signed out ');
+    
+  }
   return (
     <header className="border-b border-border bg-stream-dark">
       <div className="container mx-auto p-4 flex items-center justify-between">
@@ -21,19 +37,35 @@ const Header = ({ user, onSignIn, onSignOut }: HeaderProps) => {
           <span>Stream Mates</span>
         </Link>
         <div className="flex items-center gap-4">
+          {userstate?.username ? (
+            <>
+              <Button asChild variant="ghost" className="gap-2">
+                <Link href="/room">
+                  <Plus className="h-4 w-4" />
+                  <span>Create Room</span>
+                </Link>
+              </Button>
+              <span>{userstate.username}</span>
+              <UserMenu user={userstate} onSignOut={onSignOut} />
+            </>
 
-          <Button
-            variant="outline"
-            className="gap-2 font-semibold h-10 text-base">
-            <UserPlus className="h-4 w-4" />
-            <span className="hidden sm:inline">Guest</span>
-          </Button>
-          <Button
-            className="gap-2 bg-stream-accent hover:bg-stream-accent/90 text-white text-base font-semibold h-10"
-          >
-            <LogIn className="h-4 w-4" />
-            <span className="hidden sm:inline">Sign In</span>
-          </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="gap-2 font-semibold h-10 text-base">
+                <UserPlus className="h-4 w-4" />
+                <span className="hidden sm:inline" onClick={handleGuestEntry}>Guest</span>
+              </Button>
+              <Button
+                className="gap-2 bg-stream-accent hover:bg-stream-accent/90 text-white text-base font-semibold h-10"
+                onClick={onSignIn}
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign In</span>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

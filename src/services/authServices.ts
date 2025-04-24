@@ -1,7 +1,30 @@
 import axios from "axios";
-import { LOGIN_URL } from "@/constants/routes";
+import { LOGIN_URL, VERIFY_URL } from "@/constants/routes";
 
-export const login = async (jsonData: string) => {
+interface LoginDataType {
+    email: string,
+    password: string
+}
+interface SignupDataType {
+    email: string,
+    username: string,
+    password: string,
+    confirmpassword: string
+}
+
+export const login = async (jsonData: LoginDataType) => {
+    const res  = await axios.post(LOGIN_URL, jsonData, {withCredentials: true})
+    console.log('response obj on clinet side of next--------',res);
+    return res
+}
+
+export const signup = async (jsonData: SignupDataType) => {
     const res  = await axios.post(LOGIN_URL, jsonData)
-    console.log('wesds--------',res.headers);
+    console.log('response obj on clinet side of next--------',res);
+    return res
+}
+
+export const verifyMe = async () => {
+    const res = await axios.get(VERIFY_URL, {withCredentials: true})
+    return res
 }

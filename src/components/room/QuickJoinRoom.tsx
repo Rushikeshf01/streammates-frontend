@@ -36,8 +36,8 @@ export default function QuickJoinRoom() {
                         size="lg"
                         className="gap-2 bg-stream-accent hover:bg-stream-accent/90 text-white text-base font-semibold h-12"
                     >
-                        <ArrowRight className="ml-2 h-4 w-4" />
                         <span className="hidden sm:inline">Join Room</span>
+                        <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                 </CardFooter>
             </div>

@@ -2,19 +2,25 @@
 import QuickJoinRoom from "@/components/room/QuickJoinRoom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FilmIcon, Link, LogIn, MessageSquare, Monitor, Share2, UserPlus, Users } from "lucide-react";
+import { FilmIcon, LogIn, MessageSquare, Monitor, Plus, Share2, UserPlus, Users } from "lucide-react";
 import { useState } from "react";
-import Signin from "./login/page";
+import Signin from "./users/login/page";
+import Link from "next/link";
+import { useAppSelector } from "@/store/hooks/hooks";
+// import { useSelector } from "react-redux";
 
 export default function Home() {
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const userstate  = useAppSelector(state => state.user.user)
+  console.log(userstate)
+  const [user, setUser] = useState<{ username: string, email: string } | null>(userstate);
+  // const [user, setUser] = useState<{ username: string, email: string } | null>(null);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   // const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
   // const navigate = useNavigate();
 
   const handleSignIn = () => {
     console.log("sign in clicked");
-    
+
     setShowAuthModal(true);
     // setAuthMode("signin");
   };
@@ -23,13 +29,14 @@ export default function Home() {
   //   setAuthMode("signup");
   // };
 
-  // const handleSignInSuccess = () => {
-  //   setUser({ name: "John Doe" });
-  //   setShowAuthModal(false);
-  //   toast.success("Welcome back! You're now signed in.", {
-  //     description: "Create or join a room to start watching together."
-  //   });
-  // };
+  const handleSignInSuccess = () => {
+    // setUser({ name: "John Doe" });
+    console.log('sign in success')
+    setShowAuthModal(false);
+    // toast.success("Welcome back! You're now signed in.", {
+    //   description: "Create or join a room to start watching together."
+    // });
+  };
 
   // const handleSignOut = () => {
   //   setUser(null);
@@ -37,11 +44,16 @@ export default function Home() {
   // };
 
   const handleGuestEntry = () => {
-    setUser({ name: "Guest User" });
+    setUser({ username: "Guest User", email: "username@guest.com" });
     // toast.success("Welcome, Guest User!", {
     //   description: "You can now create or join a room."
     // });
   };
+
+  const handleCreateRoom = () => {
+    console.log("creating room");
+    
+  }
   return (
     <main className="flex-1">
       <section className="py-20 px-6">
@@ -60,14 +72,20 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                {user ? (
-                  <Button size="lg" asChild className="bg-stream-accent hover:bg-stream-accent/90 group">
-                    <Link to="/create" className="flex items-center gap-2">
-                      <Users className="h-5 w-5 group-hover:animate-pulse" />
-                      <span>Create a Room</span>
-                      <ArrowRight className="h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </Button>
+                {userstate.username ? (
+                  <>
+                    <Button
+                      size="lg"
+                      asChild
+                      variant="outline"
+                      className="gap-2 border font-semibold h-10 text-base border-white/20 text-white hover:bg-white/10 h-10"
+                      onClick={handleCreateRoom}>
+                      <Link href="/room">
+                        <Plus className="h-4 w-4" />
+                        <span className="hidden sm:inline">Create Room</span>
+                      </Link>
+                    </Button>
+                  </>
                 ) : (
                   <>
                     <Button
@@ -83,7 +101,7 @@ export default function Home() {
                       size="lg"
                       className="gap-2 border font-semibold h-10 text-base border-white/20 text-white hover:bg-white/10 h-10">
                       <UserPlus className="h-4 w-4" />
-                      <span className="hidden sm:inline">Continue as Guest</span>
+                      <span className="hidden sm:inline" onClick={handleGuestEntry}>Continue as Guest</span>
                     </Button>
                   </>
                 )}
@@ -201,7 +219,7 @@ export default function Home() {
           <div className="mt-12">
             {user ? (
               <Button size="lg" asChild className="bg-stream-accent hover:bg-stream-accent/90">
-                <Link to="/create">Create a Room</Link>
+                <Link href="/create">Create a Room</Link>
               </Button>
             ) : (
               <Button size="lg" onClick={handleSignIn} className="bg-stream-accent hover:bg-stream-accent/90">
@@ -213,10 +231,10 @@ export default function Home() {
       </section>
       {showAuthModal && (
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm z-50 animate-fade-in">
-        <div onClick={() => setShowAuthModal(false)} className="absolute inset-0"></div>
-        <div className="z-10">
-          <Signin />
-        </div>
+          <div onClick={() => setShowAuthModal(false)} className="absolute inset-0"></div>
+          <div className="z-10">
+            <Signin />
+          </div>
         </div>
       )}
     </main>
