@@ -6,28 +6,31 @@ import { LogIn, Monitor, Plus, UserPlus } from "lucide-react";
 import { useState } from 'react';
 import { useAppSelector } from '@/store/hooks/hooks';
 import UserMenu from './UserMenu';
+import useLogout from '@/store/hooks/useLogout';
 
 interface HeaderProps {
   // user: { name: string } | null;
   onSignIn: () => void;
-  onSignOut: () => void;
+  // onSignOut: () => void;
 }
 
 const Header = ({onSignIn }: HeaderProps) => {
-  const userstate  = useAppSelector(state => state.user.user)
-  console.log(userstate)
-  const [user, setUser] = useState<{ username: string, email: string } | null>(userstate);
 
+  const {user, isLoggedIn}  = useAppSelector(state => state.user)
+  console.log(user)
+  // const [user, setUser] = useState<{ username: string, email: string } | null>(user);
+  const logout = useLogout()
   const handleGuestEntry = () => {
     setUser({ username: "Guest User", email: "username@guest.com" });
     // toast.success("Welcome, Guest User!", {
     //   description: "You can now create or join a room."
     // });
   };
-  const onSignOut = () => {
-    console.log('signed out ');
+  
+  // const onSignOut = () => {
+  //   console.log('signed out ');
     
-  }
+  // }
   return (
     <header className="border-b border-border bg-stream-dark">
       <div className="container mx-auto p-4 flex items-center justify-between">
@@ -37,7 +40,7 @@ const Header = ({onSignIn }: HeaderProps) => {
           <span>Stream Mates</span>
         </Link>
         <div className="flex items-center gap-4">
-          {userstate?.username ? (
+          {isLoggedIn ? (
             <>
               <Button asChild variant="ghost" className="gap-2">
                 <Link href="/room">
@@ -45,10 +48,9 @@ const Header = ({onSignIn }: HeaderProps) => {
                   <span>Create Room</span>
                 </Link>
               </Button>
-              <span>{userstate.username}</span>
-              <UserMenu user={userstate} onSignOut={onSignOut} />
+              <span>{user?.username}</span>
+              <UserMenu user={user} onSignOut={logout} />
             </>
-
           ) : (
             <>
               <Button

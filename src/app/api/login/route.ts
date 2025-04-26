@@ -1,6 +1,4 @@
 import serverAxios from "@/lib/serverAxios";
-import { setToken } from "@/lib/token";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server"
 
 const DJANGO_LOGIN_API_ENDPOINT = `/token/`
@@ -11,12 +9,12 @@ export async function POST(request: NextRequest) {
     try {
         const res = await serverAxios.post(DJANGO_LOGIN_API_ENDPOINT, requestData)
         // const data = res.data
-        console.log("-------------------- on nextj s server",res.headers["set-cookie"])
+        // console.log("-------------------- on nextj s server",res.headers["set-cookie"])
 
 
         const response =  NextResponse.json({"loggedIn": true, 'res': res.data}, {status: 200})
 
-        // Enable the below code if you want to store cookies and forward it to the nextjs client side
+        // Enable the below code if you want to store cookies and forward it back to the nextjs client side
         // response.cookies.set()
         
         const setCookie:string[] | undefined = res.headers['set-cookie']
@@ -24,7 +22,7 @@ export async function POST(request: NextRequest) {
         // cookieStore.set('access-token', setCookie[0])
         // cookieStore().set('access-token', setCookie['access-token'])
         // console.log("setcookies  are", setCookie, cookieStore)
-        console.log("setcookies are", setCookie)
+        // console.log("setcookies are", setCookie)
 
         // setToken(setCookie[0])
         // response.cookies.set('access-token', setCookie?.at(0))
@@ -35,7 +33,7 @@ export async function POST(request: NextRequest) {
             // response.headers.set('Set-Cookie', setCookie[2])
             setCookie.forEach(cookie => response.headers.append('Set-Cookie',cookie))
         }
-        console.log("response from next server to its frontend22222", response);
+        // console.log("response from next server to its frontend22222", response);
 
         return response
     } 

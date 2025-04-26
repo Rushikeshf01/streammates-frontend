@@ -7,9 +7,11 @@ import { useState } from "react";
 import Signin from "./users/login/page";
 import Link from "next/link";
 import { useAppSelector } from "@/store/hooks/hooks";
+import { useRouter } from "next/navigation";
 // import { useSelector } from "react-redux";
 
 export default function Home() {
+  const router = useRouter()
   const userstate  = useAppSelector(state => state.user.user)
   console.log(userstate)
   const [user, setUser] = useState<{ username: string, email: string } | null>(userstate);
@@ -72,7 +74,7 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                {userstate.username ? (
+                {userstate?.username ? (
                   <>
                     <Button
                       size="lg"
@@ -233,7 +235,7 @@ export default function Home() {
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm z-50 animate-fade-in">
           <div onClick={() => setShowAuthModal(false)} className="absolute inset-0"></div>
           <div className="z-10">
-            <Signin />
+            <Signin handleSignInSuccess={handleSignInSuccess}/>
           </div>
         </div>
       )}

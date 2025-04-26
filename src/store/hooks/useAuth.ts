@@ -10,8 +10,9 @@ export const useAuth = () => {
         const fetchUser = async () => {
             const res = await verifyMe()
             const resData = res.data
-            console.log('resdata in useAuth', resData.res.user);
-            if(resData.loggedIn){
+            const prrr = {'user':{...resData.res.user}, 'isLoggedIn': true}
+            console.log('resdata in useAuth', resData, res.status, prrr);
+            if(res.status === 200){
                 dispatch(setUser(resData.res.user))
             }
         }

@@ -7,23 +7,23 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { z } from "zod";
 
 import { login } from "@/services/authServices";
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useAppDispatch } from "@/store/hooks/hooks";
+import { setUser } from "@/store/features/auth/authSlice";
 // import { useState } from "react";
 
+interface LoginProps {
+    handleSignInSuccess: () => void;
+}
 
-export default function Signin() {
+export default function Signin({ handleSignInSuccess }: LoginProps) {
+    const dispatch = useAppDispatch()
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     type SigninValues = z.infer<typeof SigninSchema>
-    const router = useRouter()
+    
     const { register, handleSubmit } = useForm<SigninValues>()
 
-    const handleSignInSuccess = () => {
-        // setUser({ name: "John Doe" });
-        console.log('sign in success')
-        // toast.success("Welcome back! You're now signed in.", {
-        //   description: "Create or join a room to start watching together."
-        // });
-      };
 
     const onSubmit: SubmitHandler<SigninValues> = async (data) => {
         console.log("this is the data on submit", data)
@@ -32,11 +32,14 @@ export default function Signin() {
 
         // const res  = await axios.post(LOGIN_URL, jsonData)
         // console.log(res);
-        const res = await login(data)
-        if (res.data.loggedIn) {
-            handleSignInSuccess()
-            router.push('/')
-        }
+        setIsLoading(true)
+        await login(data).then(res => {
+            console.log(res)
+            if (res.status === 200) {
+                handleSignInSuccess()
+                dispatch(setUser(res.data.res.user))
+            }
+        })
 
     }
     return (
@@ -63,9 +66,12 @@ export default function Signin() {
                                 size="lg"
                                 className="w-full gap-2 bg-stream-accent hover:bg-stream-accent/90 text-white text-base font-semibold h-10"
                                 // onClick={handleSignIn}
+                                disabled={isLoading}
                             >
-                                <LogIn className="h-4 w-4" />
-                                <span className="hidden sm:inline">Sign In</span>
+                            <LogIn className="h-4 w-4" />
+                            {isLoading ? <span className="hidden sm:inline">Signing In...</span>:                              
+                                    <span className="hidden sm:inline">Sign In</span>
+                            }
                             </Button>
                             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                 Dont have an account? <a href="/users/signup" className="font-medium text-blue-600 hover:underline dark:text-blue-500">Signup here</a>
@@ -82,9 +88,11 @@ export default function Signin() {
                         <div className="grid grid-cols-1 gap-4">
                             <Button
                                 variant="outline"
-                                className="gap-2 font-semibold h-10 text-base border border-white/20">
-                                <UserPlus className="h-4 w-4" />
-                                <span className="hidden sm:inline">Guest</span>
+                                className="gap-2 font-semibold h-10 text-base border border-white/20"
+                                disabled={isLoading}
+                            >
+                            <UserPlus className="h-4 w-4" />
+                            <span className="hidden sm:inline">Guest</span>
                             </Button>
                         </div>
                     </div>

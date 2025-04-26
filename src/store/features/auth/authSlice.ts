@@ -8,9 +8,9 @@ export interface User {
 
 export interface AuthState {
     user: User | null,
-    loading: boolean
+    loading: boolean,
+    isLoggedIn: boolean
 }
-
  
 export const initialAuthState: AuthState = {
     // accesstoken: null,
@@ -21,19 +21,26 @@ export const initialAuthState: AuthState = {
         username: "",
         email: ""
     },
-    loading: true
+    loading: true,
+    isLoggedIn: false
 } 
 export const authSlice = createSlice({
     name: "auth",
     initialState: initialAuthState,
     reducers:  {
-    setUser: (state, action) => {
-            state.user = action.payload
+        setUser: (state, action) => {
+                state.user = action.payload
+                state.loading = false
+                state.isLoggedIn = true;
+        },
+        clearUser: (state) => {
+            state.user = initialAuthState.user
             state.loading = false
+            state.isLoggedIn = false;
         }
     }
 })
 
-export const { setUser } = authSlice.actions
+export const { setUser, clearUser } = authSlice.actions
 
 export default authSlice.reducer

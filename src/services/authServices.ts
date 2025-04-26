@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LOGIN_URL, VERIFY_URL } from "@/constants/routes";
+import { LOGIN_URL, LOGOUT_URL, SIGNUP_URL, VERIFY_URL } from "@/constants/routes";
 
 interface LoginDataType {
     email: string,
@@ -12,15 +12,22 @@ interface SignupDataType {
     confirmpassword: string
 }
 
-export const login = async (jsonData: LoginDataType) => {
-    const res  = await axios.post(LOGIN_URL, jsonData, {withCredentials: true})
-    console.log('response obj on clinet side of next--------',res);
+export const signup = async (jsonData: SignupDataType) => {
+    const res  = await axios.post(SIGNUP_URL, jsonData)
+    // console.log('response obj on clinet side of next--------',res);
     return res
 }
 
-export const signup = async (jsonData: SignupDataType) => {
-    const res  = await axios.post(LOGIN_URL, jsonData)
-    console.log('response obj on clinet side of next--------',res);
+export const login = async (jsonData: LoginDataType) => {
+    const res  = await axios.post(LOGIN_URL, jsonData, {withCredentials: true})
+    // console.log('response obj on clinet side of next--------',res);
+    return res
+}
+
+
+export const logout = async () => {
+    const res  = await axios.post(LOGOUT_URL, {withCredentials: true})
+    // console.log('response obj on clinet side of next--------',res);
     return res
 }
 

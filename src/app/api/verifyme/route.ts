@@ -7,7 +7,6 @@ export async function GET(request: NextRequest) {
     // const requestData = await request.json()
 
     try {
-        console.log("=====================request",)
         const cookie = request.headers.get('cookie');
         console.log(cookie);
         
@@ -19,7 +18,7 @@ export async function GET(request: NextRequest) {
         // const data = res.data
         // console.log("-------------------- on  nextjs server",res.headers["set-cookie"])
 
-        const response =  NextResponse.json({"loggedIn": true, 'res': res.data}, {status: 200})
+        const response =  NextResponse.json({'res': res.data}, {status: 200})
 
         // Enable the below code if you want to store cookies and forward it to the nextjs client side
 
