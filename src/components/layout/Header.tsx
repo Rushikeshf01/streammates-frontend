@@ -2,8 +2,7 @@
 // import { useState } from "react";
 import Link from 'next/link'
 import { Button } from "@/components/ui/button";
-import { LogIn, Monitor, Plus, UserPlus } from "lucide-react";
-import { useState } from 'react';
+import { LogIn, Monitor, Plus, UserPlus, User } from "lucide-react";
 import { useAppSelector } from '@/store/hooks/hooks';
 import UserMenu from './UserMenu';
 import useLogout from '@/store/hooks/useLogout';
@@ -11,10 +10,11 @@ import useLogout from '@/store/hooks/useLogout';
 interface HeaderProps {
   // user: { name: string } | null;
   onSignIn: () => void;
+  onSignUp: () => void;
   // onSignOut: () => void;
 }
 
-const Header = ({onSignIn }: HeaderProps) => {
+const Header = ({onSignIn, onSignUp }: HeaderProps) => {
 
   const {user, isLoggedIn}  = useAppSelector(state => state.user)
   console.log(user)
@@ -56,7 +56,7 @@ const Header = ({onSignIn }: HeaderProps) => {
               <Button
                 variant="outline"
                 className="gap-2 font-semibold h-10 text-base">
-                <UserPlus className="h-4 w-4" />
+                <User className="h-4 w-4" />
                 <span className="hidden sm:inline" onClick={handleGuestEntry}>Guest</span>
               </Button>
               <Button
@@ -65,6 +65,13 @@ const Header = ({onSignIn }: HeaderProps) => {
               >
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">Sign In</span>
+              </Button>
+              <Button
+                className="gap-2 bg-stream-accent hover:bg-stream-accent/90 text-white text-base font-semibold h-10"
+                onClick={onSignUp}
+              >
+                <UserPlus className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign Up</span>
               </Button>
             </>
           )}

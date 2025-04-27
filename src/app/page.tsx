@@ -2,7 +2,7 @@
 import QuickJoinRoom from "@/components/room/QuickJoinRoom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilmIcon, LogIn, MessageSquare, Monitor, Plus, Share2, UserPlus, Users } from "lucide-react";
+import { FilmIcon, LogIn, MessageSquare, Monitor, Plus, Share2, User, Users } from "lucide-react";
 import { useState } from "react";
 import Signin from "./users/login/page";
 import Link from "next/link";
@@ -102,7 +102,7 @@ export default function Home() {
                       variant="outline"
                       size="lg"
                       className="gap-2 border font-semibold h-10 text-base border-white/20 text-white hover:bg-white/10 h-10">
-                      <UserPlus className="h-4 w-4" />
+                      <User className="h-4 w-4" />
                       <span className="hidden sm:inline" onClick={handleGuestEntry}>Continue as Guest</span>
                     </Button>
                   </>

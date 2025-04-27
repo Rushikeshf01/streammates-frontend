@@ -39,6 +39,10 @@ export default function RootLayout({
     console.log('sig in in layout')
     router.push('/users/login')
   }
+  const handleSignUp = () => {
+    console.log('sig up in layout')
+    router.push('/users/signup')
+  }
 
   return (
     <html lang="en">
@@ -47,7 +51,7 @@ export default function RootLayout({
       >
         <StoreProvider>
           <SessionInitializer />
-          {!hiddenRoutes.includes(pathname) && <Header onSignIn={handleSignIn}/>}
+          {!hiddenRoutes.includes(pathname) && <Header onSignIn={handleSignIn} onSignUp={handleSignUp}/>}
           {children}
         </StoreProvider>
       </body>

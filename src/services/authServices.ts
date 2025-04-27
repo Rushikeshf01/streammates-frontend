@@ -9,7 +9,7 @@ interface SignupDataType {
     email: string,
     username: string,
     password: string,
-    confirmpassword: string
+    password2: string
 }
 
 export const signup = async (jsonData: SignupDataType) => {
