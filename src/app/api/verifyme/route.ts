@@ -5,7 +5,7 @@ const DJANGO_VERIFY_API_ENDPOINT = `/auth/me/`
 
 export async function GET(request: NextRequest) {
     // const requestData = await request.json()
-
+   
     try {
         const cookie = request.headers.get('cookie');
         console.log(cookie);

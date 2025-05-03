@@ -13,12 +13,12 @@ import Link from "next/link";
 import { User as UserType } from "@/store/features/auth/authSlice";
   
   interface UserMenuProps {
-    user: UserType;
+    user: UserType | null;
     onSignOut: () => void;
   }
   
   const UserMenu = ({ user, onSignOut }: UserMenuProps) => {
-    const initials = user.username ? user.username
+    const initials = user?.username ? user.username
       .split(" ")
       .map((n: string) => n[0])
       .join("")
@@ -38,9 +38,9 @@ import { User as UserType } from "@/store/features/auth/authSlice";
         <DropdownMenuContent className="w-56 border-border bg-stream-dark" align="end" forceMount>
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user.username}</p>
+              <p className="text-sm font-medium leading-none">{user?.username}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>

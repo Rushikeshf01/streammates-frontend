@@ -23,7 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname()
-  const hiddenRoutes = ["/users/login", "/users/signup"]
+  // const hiddenRoutes = ["/users/login", "/users/signup"]
+  const hiddenRoutesRegx = [/^\/users\/login$/, /^\/users\/signup$/, /^\/room\/[^/]+$/ ]
   const router = useRouter()
   // const dispatch = useAppDispatch();
 
@@ -34,7 +35,7 @@ export default function RootLayout({
   //     userData
   //   })
   // )
-
+  const shouldHideHeader = hiddenRoutesRegx.some(regx => regx.test(pathname))
   const handleSignIn = () => {
     console.log('sig in in layout')
     router.push('/users/login')
@@ -51,7 +52,8 @@ export default function RootLayout({
       >
         <StoreProvider>
           <SessionInitializer />
-          {!hiddenRoutes.includes(pathname) && <Header onSignIn={handleSignIn} onSignUp={handleSignUp}/>}
+          {/* {!hiddenRoutes.includes(pathname) && <Header onSignIn={handleSignIn} onSignUp={handleSignUp}/>} */}
+          {!shouldHideHeader && <Header onSignIn={handleSignIn} onSignUp={handleSignUp}/>}
           {children}
         </StoreProvider>
       </body>
