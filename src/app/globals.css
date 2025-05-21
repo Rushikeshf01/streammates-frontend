@@ -122,6 +122,9 @@
   --primary: #8B5CF6;
   --primary-foreground: 210 40% 98%;
   --stremaccent: #8B5CF6;
+
+  --muted: #1e293b;
+  --muted-foreground: 215 20.2% 65.1%;
 }
 
 @layer base{
@@ -137,7 +140,9 @@
   --font-mono: var(--font-geist-mono);
   --color-stream-dark: var(--streamdark); 
   --color-border: var(--border);
-  --color-stream-accent: var(--primary)
+  --color-stream-accent: var(--primary);
+  --color-muted: var(--muted);
+  --color-mutedfg: var(--muted-foreground);
 }
 
 @media (prefers-color-scheme: dark) {

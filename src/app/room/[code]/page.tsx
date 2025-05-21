@@ -1,10 +1,11 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileVideo, Share, Users } from "lucide-react";
-import { useState } from "react";
+import { FileVideo, Share, User, Frown, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import VideoPlayer from "@/components/room/VideoPlayer";
+import Chat from "@/components/chat/Chat";
 
 export default function Page() {
     const { code } = useParams<{ code: string; }>()
@@ -13,8 +14,8 @@ export default function Page() {
     const [isHost, setIsHost] = useState(true);
     const [participants, setParticipants] = useState([
         { id: "1", name: "You (Host)", isSelf: true },
-        { id: "2", name: "Alice", isSelf: false },
-        { id: "3", name: "Bob", isSelf: false },
+        // { id: "2", name: "Alice", isSelf: false },
+        // { id: "3", name: "Bob", isSelf: false },
       ]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +26,30 @@ export default function Page() {
         const url = URL.createObjectURL(file)
         setVideoUrl(url)
     }
+
+    useEffect(() => {
+        const peerConnection = new RTCPeerConnection();
+        // const roomSocket = new WebSocket(
+        //     `ws://127.0.0.1:8000/ws/notify/${}/`
+        // );
+    
+        // roomSocket.onopen = function () {
+        // console.log("Web Socket successfully connected.");
+        // };
+    
+        // // on socket close
+        // roomSocket.onclose = function () {
+        // console.log("Web Socket closed unexpectedly");
+        // };
+    
+        // roomSocket.onmessage = (e) => {
+        // console.log("Data: ", JSON.parse(e.data));
+        // const data = JSON.parse(e.data)
+
+        // };
+
+    }, [participants]);
+
     return (
         <div className="flex flex-col h-screen">
         <header className="px-6 py-4 bg-stream-dark border-b border-border flex items-center justify-between">
@@ -77,37 +102,60 @@ export default function Page() {
             </div>
 
             <div className="w-96 border-l border-border flex flex-col bg-stream-dark">
-            <Tabs defaultValue="chat" className="flex flex-col h-full">
-                <TabsList className="grid grid-cols-2 m-2">
-                <TabsTrigger value="chat">Chat</TabsTrigger>
-                <TabsTrigger value="participants">Participants</TabsTrigger>
+            {/* <Tabs defaultValue="chat" className="flex flex-col h-full">
+
+                <TabsList className="grid grid-cols-2 p-2">
+                    <TabsTrigger value="chat" className="text-base text-white font-semibold hidden sm:inline text-center">Chat</TabsTrigger>
+                    <TabsTrigger value="participants" className="text-base text-white font-semibold hidden sm:inline text-center">Participants</TabsTrigger>
                 </TabsList>
-                <TabsContent value="chat" className="flex-1 p-0 m-0 overflow-hidden">
-                {/* <Chat roomId={roomId || ""} /> */}
+                <TabsContent value="chat">
+                    <Chat roomCode={code || ""} />
                 </TabsContent>
-                <TabsContent value="participants" className="flex-1 p-4 overflow-auto">
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">PARTICIPANTS ({participants.length})</h3>
-                    <div className="space-y-2">
-                    {participants.map((participant) => (
-                        <div 
-                        key={participant.id} 
-                        className="p-3 rounded-md flex items-center justify-between bg-black/20"
-                        >
-                        <span className="font-medium">
-                            {participant.name}
-                        </span>
-                        {!participant.isSelf && isHost && (
-                            <Button variant="ghost" size="sm">
-                            Remove
-                            </Button>
-                        )}
+                <TabsContent value="participants">
+                    <div className="flex flex-col h-full">
+                        <h3 className="text-sm font-medium text-muted-foreground">PARTICIPANTS ({participants.length})</h3>
+                        <div className="space-y-2">
+                        {participants.map((participant) => (
+                            <div 
+                            key={participant.id} 
+                            className="p-3 rounded-md flex items-center justify-between bg-black/20"
+                            >
+                            <span className="font-medium">
+                                {participant.name}
+                            </span>
+                            {!participant.isSelf && isHost && (
+                                <Button variant="ghost" size="sm">
+                                Remove
+                                </Button>
+                            )}
+                            </div>
+                        ))}
                         </div>
-                    ))}
                     </div>
-                </div>
                 </TabsContent>
-            </Tabs>
+            </Tabs> */}
+            <Tabs defaultValue="chat" className="w-[400px]">
+                    <TabsList className="grid w-92 h-full grid-cols-2 m-2 p-1 bg-[#1e293b] border-border">
+                      <TabsTrigger value="chat" className="text-base text-white font-semibold hidden sm:inline text-center ">Chat</TabsTrigger>
+                      <TabsTrigger value="participants" className="text-base text-white font-semibold hidden sm:inline text-center">Participants</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="chat">
+                        <Chat roomCode={code || ""} />
+                    </TabsContent>
+                    <TabsContent value="participants">
+                        {!(participants.length > 1) ?  
+                            (
+                                <div className="mx-10">
+                                    <Frown  className="h-10 w-10 m-auto mb-4" color="#b526c0" />
+                                    <p>Go get some friends and touch some grass!!!!! </p>
+                                </div>
+                        ) : (
+
+                            <p>you will see your friends here soon. {participants.length}</p>
+                        )
+                        }
+                    </TabsContent>
+                  </Tabs>
             </div>
         </div>
         </div>
