@@ -72,7 +72,7 @@ export default function CreateRoom() {
                         {...register("room_name")}
                         placeholder="Enter room name here.."
                         className="border rounded px-3 py-2 my-2 w-full" />
-                    {errors.roomName && <span>room name field is required</span>}
+                    {errors.room_name && <span>room name field is required</span>}
                 </CardContent>
                 <CardFooter className="my-4">
                     <Button

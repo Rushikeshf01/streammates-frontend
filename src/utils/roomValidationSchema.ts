@@ -6,6 +6,6 @@ export const CreateRoomSchema = z.object({
 });
 
 export const JoinRoomSchema = z.object({
-    roomCode: z.string().min(2, "Room code is required"),
+    room_code: z.string().min(2, "Room code is required"),
    
 });

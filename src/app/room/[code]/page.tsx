@@ -28,25 +28,27 @@ export default function Page() {
     }
 
     useEffect(() => {
-        const peerConnection = new RTCPeerConnection();
-        // const roomSocket = new WebSocket(
-        //     `ws://127.0.0.1:8000/ws/notify/${}/`
-        // );
-    
-        // roomSocket.onopen = function () {
-        // console.log("Web Socket successfully connected.");
-        // };
-    
-        // // on socket close
-        // roomSocket.onclose = function () {
-        // console.log("Web Socket closed unexpectedly");
-        // };
-    
-        // roomSocket.onmessage = (e) => {
-        // console.log("Data: ", JSON.parse(e.data));
-        // const data = JSON.parse(e.data)
+        // const peerConnection = new RTCPeerConnection();
+        // console.log(`ws://127.0.0.1:8000/ws/room/${code}/ `)
 
-        // };
+        const roomSocket = new WebSocket(
+            `ws://127.0.0.1:8000/ws/room/${code}/`
+        );
+    
+        roomSocket.onopen = function () {
+        console.log("Web Socket successfully connected.");
+        };
+    
+        // onsocket close
+        roomSocket.onclose = function () {
+        console.log("Web Socket closed unexpectedly");
+        }; 
+    
+        roomSocket.onmessage = (e) => {
+        console.log("Data: ", JSON.parse(e.data));
+        const data = JSON.parse(e.data)
+
+        };
 
     }, [participants]);
 
