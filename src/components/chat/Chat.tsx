@@ -17,10 +17,12 @@ interface Message {
 
 interface ChatProps {
   roomCode: string;
+  messages: Message[];
+  sendMessage: (message: string) => void;
 }
 
-const Chat = ({ roomCode }: ChatProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const Chat = ({ roomCode, messages, sendMessage }: ChatProps) => {
+  const [dummyMessages, setDummyMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +55,7 @@ const Chat = ({ roomCode }: ChatProps) => {
       }
     ];
     
-    setMessages(dummyMessages);
+    setDummyMessages(dummyMessages);
   }, [roomCode]);
 
   // Auto-scroll to bottom when new messages arrive
@@ -78,15 +80,17 @@ const Chat = ({ roomCode }: ChatProps) => {
       timestamp: new Date()
     };
     
-    setMessages((prev) => [...prev, newMessage]);
+    
+    setDummyMessages((prev) => [...prev, newMessage]);
+    sendMessage(inputMessage.trim());
     setInputMessage("");
     
     // In a real app, we would send this message to the server
-    console.log("Sending message:", newMessage);
+    console.log("=////////:", newMessage);
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full px-2">
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
         <div className="space-y-4">
           {messages.map((message) => (
@@ -98,9 +102,11 @@ const Chat = ({ roomCode }: ChatProps) => {
       <div className="p-3 border-t border-border">
         <form onSubmit={handleSendMessage} className="flex gap-2">
         <input
+            value={inputMessage}
             placeholder="Type a message..."
+            onChange={(e) => { setInputMessage(e.target.value) }}
             className="border rounded px-3 py-2 my-2 w-full" />
-          <Button type="submit" size="icon" disabled={!inputMessage.trim()}>
+          <Button type="submit" size="icon" disabled={!inputMessage.trim()} className="bg-stream-accent hover:bg-stream-accent/90 text-white pointer">
             <Send className="h-4 w-4" />
           </Button>
         </form>

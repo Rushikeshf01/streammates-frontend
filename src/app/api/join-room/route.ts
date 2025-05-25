@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
         
         const cookie = request.headers.get('cookie');
         const csrf = await getCookie('csrftoken')
-        console.log(']]]]]]]]]]]]]]]]]]]]',csrf)
         const res = await serverAxios.post(DJANGO_JOIN_ROOM_API_ENDPOINT, requestData, {
             headers: {
                 'Cookie': cookie,

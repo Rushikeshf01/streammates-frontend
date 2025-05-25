@@ -1,22 +1,70 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileVideo, Share, User, Frown, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { FileVideo, Share, Frown, Users, Monitor } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import VideoPlayer from "@/components/room/VideoPlayer";
 import Chat from "@/components/chat/Chat";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
+interface Message {
+  id: string;
+  user: {
+    name: string | undefined;
+    isHost: boolean;
+    isSelf: boolean;
+  };
+  text: string;
+  timestamp: Date;
+}
+
+const dummyMessages: Message[] = [
+      {
+        id: "1",
+        user: { name: "System", isHost: false, isSelf: false },
+        text: "Welcome to the watch room! You can chat with other participants here.",
+        timestamp: new Date(Date.now() - 1000 * 60 * 5)
+      },
+      {
+        id: "2",
+        user: { name: "Alice", isHost: false, isSelf: false },
+        text: "Hey everyone! Excited to watch together!",
+        timestamp: new Date(Date.now() - 1000 * 60 * 2)
+      },
+      {
+        id: "3",
+        user: { name: "You", isHost: true, isSelf: true },
+        text: "Welcome Alice! We'll start in a few minutes.",
+        timestamp: new Date(Date.now() - 1000 * 60)
+      },
+      {
+        id: "4",
+        user: { name: "Bob", isHost: false, isSelf: false },
+        text: "I brought popcorn 🍿",
+        timestamp: new Date(Date.now() - 1000 * 30)
+      }
+    ];
+
 
 export default function Page() {
     const { code } = useParams<{ code: string; }>()
 
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const username  = useSelector((state: RootState) => state.user.user?.username);
+    const usernameRef = useRef(username);
+
     const [isHost, setIsHost] = useState(true);
     const [participants, setParticipants] = useState([
         { id: "1", name: "You (Host)", isSelf: true },
         // { id: "2", name: "Alice", isSelf: false },
         // { id: "3", name: "Bob", isSelf: false },
       ]);
+    const ws = useRef<WebSocket | null>(null);
+    
+    const [messages, setMessages] = useState<Message[]>([]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
@@ -28,33 +76,63 @@ export default function Page() {
     }
 
     useEffect(() => {
-        // const peerConnection = new RTCPeerConnection();
-        // console.log(`ws://127.0.0.1:8000/ws/room/${code}/ `)
+        usernameRef.current = username;
+}, [username]);
 
-        const roomSocket = new WebSocket(
-            `ws://127.0.0.1:8000/ws/room/${code}/`
-        );
-    
-        roomSocket.onopen = function () {
-        console.log("Web Socket successfully connected.");
+    useEffect(() => {
+        ws.current = new WebSocket(`ws://127.0.0.1:8000/ws/room/${code}/`);
+
+        ws.current.onopen = () => {
+            console.log("Web Socket successfully connected.");
         };
     
+        ws.current.onmessage = (e) => {
+            const data = JSON.parse(e.data)
+            console.log(data);
+            
+            const sender = data.user
+            const isSelf = sender?.name === usernameRef.current;
+
+            const newMessage: Message = {
+                id: Date.now().toString(),
+                user: { name: sender.name, isHost: false, isSelf: isSelf },
+                text: data.message,
+                timestamp: new Date()
+            };
+            console.log('recieved data:', newMessage);
+            setMessages((prev) => [...prev, newMessage]);
+
+
+            // if (data.type === "chat_message") {
+            // }
+
+        };
+
         // onsocket close
-        roomSocket.onclose = function () {
-        console.log("Web Socket closed unexpectedly");
+        ws.current.onclose = () => {
+            console.log("Web Socket closed unexpectedly");
         }; 
-    
-        roomSocket.onmessage = (e) => {
-        console.log("Data: ", JSON.parse(e.data));
-        const data = JSON.parse(e.data)
+    }, [code]);
 
-        };
+    // useEffect(() => {
+    //     // const peerConnection = new RTCPeerConnection();
+    //     // console.log(`ws://127.0.0.1:8000/ws/room/${code}/ `)    
 
-    }, [participants]);
+    // }, [participants]);
+
+    const sendMessage = (message: string) => {
+        ws.current?.send(JSON.stringify({ type: "chat_message", message, user: { name: usernameRef.current, isHost: isHost, isSelf: true } }));
+    }
+
 
     return (
         <div className="flex flex-col h-screen">
         <header className="px-6 py-4 bg-stream-dark border-b border-border flex items-center justify-between">
+            <Link href="/"
+                      className="flex items-center gap-2 text-xl font-bold text-white hover-scale">
+                      <Monitor className="h-6 w-6 text-stream-accent" />
+                      <span>Stream Mates</span>
+                    </Link>
             <h1 className="text-lg font-semibold">Room: {code}</h1>
             <div className="flex items-center gap-4">
             <Button 
@@ -142,7 +220,7 @@ export default function Page() {
                       <TabsTrigger value="participants" className="text-base text-white font-semibold hidden sm:inline text-center">Participants</TabsTrigger>
                     </TabsList>
                     <TabsContent value="chat">
-                        <Chat roomCode={code || ""} />
+                        <Chat roomCode={code || ""} messages={messages} sendMessage={sendMessage} />
                     </TabsContent>
                     <TabsContent value="participants">
                         {!(participants.length > 1) ?  
@@ -151,8 +229,7 @@ export default function Page() {
                                     <Frown  className="h-10 w-10 m-auto mb-4" color="#b526c0" />
                                     <p>Go get some friends and touch some grass!!!!! </p>
                                 </div>
-                        ) : (
-
+                        ) : (   
                             <p>you will see your friends here soon. {participants.length}</p>
                         )
                         }
